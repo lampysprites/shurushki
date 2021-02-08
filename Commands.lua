@@ -1,0 +1,56 @@
+local function run_script(f) 
+    return function()
+        dofile(app.fs.joinPath(app.fs.userConfigPath, "extensions", "shurushki", f))
+    end
+end
+
+function init(plugin)
+    plugin:newCommand{
+        id="Export Atlas",
+        title="Export Atlas...",
+        group="file_export",
+        onclick=run_script("Export Atlas.lua")
+    }
+
+    plugin:newCommand{
+        id="Move Cels",
+        title="Move Cels...",
+        group="edit_transform",
+        onclick=run_script("Move Cels.lua")
+    }
+
+    plugin:newCommand{
+        id="Highlight Cels",
+        title="Highlight Cels...",
+        group="view_animation_helpers",
+        onclick=run_script("Highlight Cels.lua")
+    }
+
+    plugin:newCommand{
+        id="Gamma Ramp",
+        title="Gamma Ramp",
+        group="edit_fill",
+        onclick=run_script("Gamma Ramp.lua")
+    }
+
+    plugin:newCommand{
+        id="Noise",
+        title="Noise",
+        group="edit_fill",
+        onclick=run_script("Noise.lua")
+    }
+
+    plugin:newCommand{
+        id="Frame Pattern",
+        title="Frame Pattern",
+        group="select_simple",
+        onclick=run_script("Pattern Select Frames.lua")
+    }
+
+    plugin:newCommand{
+        id="Time Stretch",
+        title="Time Stretch",
+        group="cel_frames",
+        onclick=run_script("Time Stretch.lua")
+    }
+end

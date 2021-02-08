@@ -1,0 +1,18 @@
+{
+    "name": "shurushki",
+    "displayName": "Shuruski",
+    "description": "My scripts do something",
+    "version": "0.0",
+    "author": { "name": "Lampy",
+                "email": "dont@call.me",
+                "url": "https://github.com/lampysprites/shurushki-aseprite" },
+    "contributors": [ ],
+    "publisher": "lampy",
+    "license": "CC-BY-4.0",
+    "categories": [ "Scripts" ],
+    "contributes": {
+      "scripts": [
+          { "path": "./Commands.lua" }
+      ]
+    }
+  }
