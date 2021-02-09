@@ -110,6 +110,21 @@ function deploy_packer_script()
 end
 
 
+-- At the time of writing, Ase api haven't implememnted the whole os module. 
+-- Let's use python, since we have it already and it works on any platform
+function remove_file(path)
+    path = string.gsub(path, '\\', '\\\\')
+    local code = string.format("import os; os.remove('%s')", path)
+
+    if not os.execute(python_executable .. ' -c "' .. code .. '"') then
+        app.alert('Cannot detect python executable at "' .. python_executable .. '"\n' ..
+            'Please make sure python3 is installed, or edit its location in the script file' .. '\n' ..
+            'A temporary file at "' .. path .. '" could not be removed.')
+        return false
+    end
+end
+
+
 --[[ PACKING LOGIC
         executed from the dialog ui. It can be reused in a custom script, if you're looking for a CLI option]]
 -- add the sprite's cels to packing data
@@ -444,7 +459,6 @@ function ensure_sprites_open()
             local fn = sprites[i].filename
             sprites[i] = app.open(fn)
             if sprites[i] == nil then
-                -- TODO possibly stop exporting
                 local press = app.alert{text="Sprite can not be opened, or no longer exists: \nDo you want to and export remaining sprites?" .. fn, buttons={"Export", "Cancel"}}
                 if press == 2 then
                     return false 
@@ -555,7 +569,24 @@ function export() -- button callback
     end
 
     hnd:close()
-    cancel() -- it just does the cleanup
+
+    for _,spr in ipairs(temp_opened_sprites) do
+        spr:close()
+    end
+
+    app.alert("Export completed successfully!")
+end
+
+
+-- Currently, Ase can figure out the OS file manager, but doesn't allow to open an arbitrary location
+-- This function creates a temporary file, saves it to a required location and deletes it afterwards
+function open_folder(path)
+    local anchor = Sprite(1, 1)
+    path = app.fs.joinPath(path or "", "_temp_file_delete_it_pls.ase")
+    anchor:saveAs(path)
+    app.command.OpenInFolder()
+    remove_file(path)
+    anchor:close()
 end
 
 
@@ -576,7 +607,13 @@ function show_dialog(bounds)
     end
     dlg:number{ id="padding", label="Padding", text=tostring(padding)}
 
-    dlg:file{ label="Output File", id="outfile", save=true, filename=outfile, filetypes={"json"} }
+    dlg:file{ label="Output File", id="outfile", save=true, filename=outfile, filetypes={"json"}, onchange=refresh }
+    if app.fs.isFile(outfile) then
+        dlg:button{text="Re-export", onclick=function() end}
+    end
+    if app.fs.isDirectory(app.fs.filePath(outfile)) then
+        dlg:button{text="Open Folder", onclick=function() open_folder(app.fs.filePath(outfile)) end}
+    end
 
     dlg:newrow()
     dlg:separator()
@@ -584,8 +621,7 @@ function show_dialog(bounds)
     -- dlg:check{id="savesettings", text="Remember Settings"}
     dlg:button{text="Preview", onclick=preview}
     dlg:button{text="Export", onclick=export}
-    dlg:button{text="Re-export", onclick=function() end}
-    dlg:button{text="Cancel", onclick=cancel}
+    dlg:button{text="Close", onclick=cancel}
 
     if bounds then
         dlg:show{ wait=false }
