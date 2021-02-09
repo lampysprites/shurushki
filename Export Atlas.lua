@@ -353,7 +353,7 @@ end
 
 
 -- record cel data
-function json_cels(sprite, bounds, image_to_bounds_map, layers_flattened)
+function json_cels(sprite, bounds, image_to_bounds_map, layers_flattened, pad)
     local entries = {}
 
     for i,cel in ipairs(sprite.cels) do
@@ -367,10 +367,10 @@ function json_cels(sprite, bounds, image_to_bounds_map, layers_flattened)
                 '"page": ', page - 1, ',', -- switch to cultcargo arrays
                 '"x": ', cel.position.x, ',',
                 '"y": ', cel.position.y, ',',
-                '"u": ', bb.x, ',',
-                '"v": ', bb.y, ',',
-                '"w": ', bb.w, ',',
-                '"h": ', bb.h
+                '"u": ', bb.x + pad, ',',
+                '"v": ', bb.y + pad, ',',
+                '"w": ', bb.w - 2 * pad, ',',
+                '"h": ', bb.h - 2 * pad
             }, "")
 
         if cel.data ~= "" then 
@@ -553,7 +553,7 @@ function export() -- button callback
     for _,sprite in ipairs(sprites) do
         local layer_entries, layers_flattened = json_layers(sprite)
         local tag_entries = json_tags(sprite)
-        local cel_entries = json_cels(sprite, bounds, image_to_bounds_map, layers_flattened)
+        local cel_entries = json_cels(sprite, bounds, image_to_bounds_map, layers_flattened, dlg.data.padding)
         local short_name = app.fs.fileTitle(sprite.filename)
         local json_sprite = string.format('{"name": "%s", "length": %d, "w": %d, "h": %d, "layers":%s,"tags":%s,"frames":%s}',
             short_name, #sprite.frames, sprite.width, sprite.height, layer_entries, tag_entries, cel_entries, export_settings)
@@ -574,7 +574,10 @@ function export() -- button callback
         spr:close()
     end
 
-    app.alert("Export completed successfully!")
+    local press = app.alert{text="Export completed successfully!", buttons={"Back", "Close"}}
+    if press == 2 then
+        cancel()
+    end
 end
 
 
