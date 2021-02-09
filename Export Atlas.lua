@@ -43,6 +43,7 @@ end
 --[[ PYTHON RELATED STUFF
         this script will write a python file and use it to calculate the atlas packing
     not the cleanest way but the problem is not easy, and I haven't found a good solution in pure lua ]]
+
 packer_source=[[
 from rectpack import newPacker
 import sys
@@ -108,11 +109,12 @@ function deploy_packer_script()
     end
 end
 
+
 --[[ PACKING LOGIC
         executed from the dialog ui. It can be reused in a custom script, if you're looking for a CLI option]]
 -- add the sprite's cels to packing data
 
-function prepare_packing(bounds, bounds_map, sprite)
+function prepare_packing(bounds, bounds_map, sprite, pad)
     local i = #bounds + 1
     for _,cel in ipairs(sprite.cels) do
         local image = cel.image
@@ -120,7 +122,7 @@ function prepare_packing(bounds, bounds_map, sprite)
         -- so the map has an entry for them
 
         if find_by_key(bounds_map, image) == nil then
-            bounds[i] = {w=cel.bounds.width, h=cel.bounds.height, cel=cel}
+            bounds[i] = {w=cel.bounds.width + 2 * pad, h=cel.bounds.height + 2 * pad, cel=cel}
             bounds_map[image] = i
             i = i + 1
         end
@@ -153,8 +155,8 @@ function run_packer(bounds, pagecount, texsize)
     else
         local i = 1
         for x,y in string.gmatch(packed_str, "(%d+):(%d+),?") do
-            bounds[i].x = x
-            bounds[i].y = y
+            bounds[i].x = tonumber(x)
+            bounds[i].y = tonumber(y)
             bounds[i].page = 1 -- TODO
             i = i + 1
         end
@@ -200,13 +202,13 @@ end
 
 
 -- generate packed Image(s). returns an array
-function pack_textures(sprites, texsize, pages)
+function pack_textures(sprites, texsize, pages, pad)
     local bounds = {}
     local image_to_bounds_map = {}
     local result
 
     for _,sprite in ipairs(sprites) do
-        prepare_packing(bounds, image_to_bounds_map, sprite)
+        prepare_packing(bounds, image_to_bounds_map, sprite, pad)
     end
     if texsize == 0 then
         result = packer_auto_size(bounds)
@@ -235,7 +237,20 @@ function pack_textures(sprites, texsize, pages)
         local img = Image(texsize, texsize)
         for i,bb in ipairs(bounds) do
             if bb.page == pn then
-                img:drawImage(bb.cel.image, bb.x, bb.y)
+                img:drawImage(bb.cel.image, bb.x + pad, bb.y + pad)
+                
+                -- padding
+                for d=0,pad - 1 do 
+                    for y=0,bb.h-1 do
+                        img:drawPixel(bb.x + d, bb.y + y, img:getPixel(bb.x + pad, bb.y + y))
+                        img:drawPixel(bb.x + bb.w - 1 - d, bb.y + y, img:getPixel(bb.x + bb.w - 1 - pad, bb.y + y))
+                    end
+
+                    for x=0,bb.w-1 do
+                        img:drawPixel(bb.x + x, bb.y + d, img:getPixel(bb.x + x, bb.y + pad))
+                        img:drawPixel(bb.x + x, bb.y + bb.h - 1 - d, img:getPixel(bb.x + x, bb.y + bb.h - 1 - pad))
+                    end
+                end
             end
         end
         table.insert(texpages, img)
@@ -287,11 +302,24 @@ function json_layers(sprite)
     
         local entry = table.concat({
             '{"id": ', id, ',',
-            '"name": "', layer.name, '",',
-            '"group": ', layer.isGroup and 'true' or 'false', ',',
-            '"attached": ', group == nil and  'null' or group - 1, ',', 
-            '"data": "', layer.data, '"}'
+            '"name": "', layer.name, '"'
         }, "")
+
+        if layer.isGroup then
+            entry = entry .. ',"group": true'
+        end
+
+        if group ~= nil then 
+            entry = entry .. table.concat({',', '"attached": ', group - 1}, "")
+            
+        end
+
+        if layer.data ~= "" then
+            entry = entry .. table.concat({',', '"data": "', layer.data, '"'}, "")
+        end
+
+        entry = entry .. '}'
+
         table.insert(entries, entry)
     
         if layer.isGroup and #layer.layers >= 1 then 
@@ -327,9 +355,14 @@ function json_cels(sprite, bounds, image_to_bounds_map, layers_flattened)
                 '"u": ', bb.x, ',',
                 '"v": ', bb.y, ',',
                 '"w": ', bb.w, ',',
-                '"h": ', bb.h, ',',
-                '"data": "', cel.data, '"}'
+                '"h": ', bb.h
             }, "")
+
+        if cel.data ~= "" then 
+            entry = entry .. table.concat({',', '"data": "', cel.data, '"'}, "")
+        end
+
+        entry = entry .. '}'
         entries[i] = entry
     end
 
@@ -367,6 +400,10 @@ dlg = {} -- Dialog() later
 sprites = {} -- user's selection of which sprites to export
 preview_sprites = {} -- sprites opened for preview
 temp_opened_sprites = {} -- to reopen the sprites included in exporting
+texsize = 0
+outfile = ""
+pages = 1
+padding = 0
 
 function json_export(size, pages)
     local textures = {}
@@ -385,7 +422,7 @@ function json_export(size, pages)
     return table.concat({
         '{"sprites": ["', sprite_names ,'"],',
         '"pages": ', #pages, ',',
-        '"padding": 0,', -- TODO
+        '"padding": ', dlg.data.padding ,',',
         '"textures": ["', textures, '"],',
         '"size": ', size, '}'
     }, "")
@@ -439,7 +476,7 @@ function preview() -- button callback
         return 
     end
 
-    local pages = pack_textures(sprites, dlg.data.texsize, 1--[[dlg.data.pages]])
+    local pages = pack_textures(sprites, dlg.data.texsize, 1--[[dlg.data.pages]], dlg.data.padding)
     if pages ~= nil then 
         for i,tex in ipairs(pages) do
             local texspr = Sprite(tex.width, tex.height)
@@ -487,7 +524,7 @@ function export() -- button callback
         return
     end
     
-    local pages, texsize, bounds, image_to_bounds_map = pack_textures(sprites, dlg.data.texsize, 1--[[dlg.data.pages]])
+    local pages, texsize, bounds, image_to_bounds_map = pack_textures(sprites, dlg.data.texsize, 1--[[dlg.data.pages]], dlg.data.padding)
     if pages ~= nil then 
         for i,tex in ipairs(pages) do
             local texname = string.format("%s_%03d.png", cname, i)
@@ -531,15 +568,15 @@ function show_dialog(bounds)
         dlg:button { label="", text = "- " .. sprite.filename, onclick=remove_sprite_f() }
     end
     -- TODO
-    -- dlg:number{ id="pages", label="Pages", text="1"}
-    dlg:number{ id="texsize", label="Page Size", text="0"}
+    -- dlg:number{ id="pages", label="Pages", text=tostring(pages)}
+    dlg:number{ id="texsize", label="Page Size", text=tostring(texsize)}
     dlg:newrow()
     for i,text_val in pairs(size_options) do
         dlg:button{text=text_val[1], onclick=change_texsize_f(text_val[2])}
     end
-    -- dlg:number{ id="pad", label="Padding", text="0"}
+    dlg:number{ id="padding", label="Padding", text=tostring(padding)}
 
-    dlg:file{ label="Output File", id="outfile", save=true, filename="", filetypes={"json"} }
+    dlg:file{ label="Output File", id="outfile", save=true, filename=outfile, filetypes={"json"} }
 
     dlg:newrow()
     dlg:separator()
@@ -607,6 +644,10 @@ end
 
 function refresh()
     local rect = Rectangle(dlg.bounds)
+    texsize = dlg.data.texsize
+    outfile = dlg.data.outfile
+    -- pages = dlg.data.pages TODO
+    padding = dlg.data.padding
     dlg:close()
     show_dialog(rect)
 end
