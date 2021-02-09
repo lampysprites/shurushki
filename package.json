@@ -1,8 +1,8 @@
 {
     "name": "shurushki",
-    "displayName": "Shuruski",
-    "description": "My scripts do something",
-    "version": "0.0",
+    "displayName": "Shurushki",
+    "description": "A collection of badly maintained scripts for Aseprite with no unified purpose.",
+    "version": "0.1",
     "author": { "name": "Lampy",
                 "email": "dont@call.me",
                 "url": "https://github.com/lampysprites/shurushki-aseprite" },
