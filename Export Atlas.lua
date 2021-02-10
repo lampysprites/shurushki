@@ -25,21 +25,6 @@ function find_by_key(map, key)
 end
 
 
--- TODO delete this
-function tmp_file(fname, text)
-    local fname = app.fs.joinPath(app.fs.tempPath, fname)
-    local hnd = io.open(fname, "w")
-    if hnd == nil then
-        app.alert("Cannot open temp file for writing: " .. fname)
-        return nil
-    end
-    if hnd:write(text) then
-        hnd:close()
-        return app.fs.joinPath(app.fs.tempPath, fname)
-    end
-end
-
-
 --[[ PYTHON RELATED STUFF
         this script will write a python file and use it to calculate the atlas packing
     not the cleanest way but the problem is not easy, and I haven't found a good solution in pure lua ]]
