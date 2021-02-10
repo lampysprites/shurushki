@@ -11,6 +11,10 @@ A collection of badly maintained scripts for Aseprite with no unified purpose.
 
 ## **Scripts**
 
+## Bitmap Text (`Edit > Bitmap Text`)
+
+Draw bitmap text using a simple bmf format used in ProMotion/GrafX2/Love2D/etc. Not to be confused with Angelcode's bmfont. An example of such font (by me) is included. Unlike ttf's, these fonts never blur, support color, and are pretty trivial to edit.
+
 ## Export Atlas (`File > Export Atlas`)
 
 Combine multiple sprites to a single texture and generates .json data for the layout. Similar to spritesheet export, but can combine multiple sprites, and each layer and frame is treated separately.

@@ -53,4 +53,11 @@ function init(plugin)
         group="cel_frames",
         onclick=run_script("Time Stretch.lua")
     }
+
+    plugin:newCommand{
+        id="Bitmap Text",
+        title="Bitmap Text",
+        group="edit_fill",
+        onclick=run_script("Bitmap Text.lua")
+    }
 end
