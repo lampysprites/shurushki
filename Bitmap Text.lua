@@ -67,8 +67,6 @@ end
 
 --[[ SCRIPT BUSINESS ]]--
 
-
--- TODO use an original font
 -- Road 6 is my original font, no attribution needed ~lampysprites
 local fontfile = app.fs.joinPath(app.fs.userConfigPath, "extensions", "shurushki", "fonts", "road_6.png")
 local lspace = 0
