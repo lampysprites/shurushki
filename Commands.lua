@@ -6,6 +6,13 @@ end
 
 function init(plugin)
     plugin:newCommand{
+        id="Bitmap Text",
+        title="Bitmap Text",
+        group="edit_fill",
+        onclick=run_script("Bitmap Text.lua")
+    }
+
+    plugin:newCommand{
         id="Export Atlas",
         title="Export Atlas...",
         group="file_export",
@@ -24,6 +31,20 @@ function init(plugin)
         title="Highlight Cels...",
         group="view_animation_helpers",
         onclick=run_script("Highlight Cels.lua")
+    }
+
+    plugin:newCommand{
+        id="Link Active Cel",
+        title="Link Active",
+        group="cel_popup_links",
+        onclick=run_script("Link Active Cel.lua")
+    }
+
+    plugin:newCommand{
+        id="Link Cel To All Frames",
+        title="Link To All Frames",
+        group="cel_popup_links",
+        onclick=run_script("Link Cel To All Frames.lua")
     }
 
     plugin:newCommand{
@@ -52,26 +73,5 @@ function init(plugin)
         title="Time Stretch",
         group="cel_frames",
         onclick=run_script("Time Stretch.lua")
-    }
-
-    plugin:newCommand{
-        id="Bitmap Text",
-        title="Bitmap Text",
-        group="edit_fill",
-        onclick=run_script("Bitmap Text.lua")
-    }
-
-    plugin:newCommand{
-        id="Link Active Cel",
-        title="Link Active",
-        group="cel_popup_links",
-        onclick=run_script("Link Active Cel.lua")
-    }
-
-    plugin:newCommand{
-        id="Link Cel To All Frames",
-        title="Link To All Frames",
-        group="cel_popup_links",
-        onclick=run_script("Link Cel To All Frames.lua")
     }
 end
