@@ -24,6 +24,10 @@ Combine multiple sprites to a single texture and generates .json data for the la
 
 Makes Timeline a bit easier to navigate by finding and highlighting frames of certain duration. Also allows to highlight cels manually, even though Aseprite now added its own tools for doing so.
 
+## Link Active Cel / Link To All Frames (`Timeline > Cel > Right Click`)
+
+Make the current cel linked to either the selection, or the whole timeline. Unlike the default commands, all new cels store the same frame as the current cel, not the first one. Makes working with multiple layers for the background in an animation a bit faster.
+
 ## Pattern Select (`Select > Frame Pattern`)
 
 Select frames in a checkered order. Primary use is for dropping the frames from gifs to reduce the size (in that case, don't forget to adjust the framerate afterwards!).

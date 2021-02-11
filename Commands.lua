@@ -60,4 +60,18 @@ function init(plugin)
         group="edit_fill",
         onclick=run_script("Bitmap Text.lua")
     }
+
+    plugin:newCommand{
+        id="Link Active Cel",
+        title="Link Active",
+        group="cel_popup_links",
+        onclick=run_script("Link Active Cel.lua")
+    }
+
+    plugin:newCommand{
+        id="Link Cel To All Frames",
+        title="Link To All Frames",
+        group="cel_popup_links",
+        onclick=run_script("Link Cel To All Frames.lua")
+    }
 end
