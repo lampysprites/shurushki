@@ -109,7 +109,7 @@ end
 
 
 function print_text()
-    font = Image{fromFile=fontfile}
+    font = Image{fromFile=dlg.data.fontfile}
 
     if not layer then
         layer = app.activeSprite:newLayer()
@@ -171,7 +171,7 @@ function show_dialog(bounds)
         dlg:button{text="- Del Line", onclick=remove_line}
     end
 
-    dlg:file{ id="fontfile", label="Font file", open=true, title="Choose font file", filename=fontfile}
+    dlg:file{ id="fontfile", label="Font file", open=true, title="Choose font file", filename=fontfile }
 
     dlg:number{ id="lspace", label="Letter Spacing", text=tostring(lspace)}
     dlg:number{ id="wspace", label="Word Spacing", text=tostring(wspace)}
@@ -185,6 +185,7 @@ function show_dialog(bounds)
 
     
     dlg:show() -- everything becomes hard when it's non-blocking
+    
     if bounds then
         bounds.height = dlg.bounds.height
     else
