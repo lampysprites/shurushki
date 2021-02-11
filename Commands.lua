@@ -69,6 +69,13 @@ function init(plugin)
     }
 
     plugin:newCommand{
+        id="Splice Animation",
+        title="Splice Animation",
+        group="file_export",
+        onclick=run_script("Splice Animation.lua")
+    }
+
+    plugin:newCommand{
         id="Time Stretch",
         title="Time Stretch",
         group="cel_frames",
