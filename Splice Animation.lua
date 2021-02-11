@@ -7,6 +7,9 @@ local last_tag = app.activeTag or sprite.tags[1]
 -- "tag" or "frames"
 local mode = "tag"
 
+local dlg
+local expdlg, expi, xbounds
+
 
 function cancel()
     if layer then
@@ -53,6 +56,101 @@ function add_frames()
     end
 
     refresh()
+end
+
+
+function expand_apply()
+    local item = sequence[expi]
+
+    if item.name=="frames" then
+        item.from = tonumber(expdlg.data.from)
+        item.to = tonumber(expdlg.data.to)
+    else
+        item.name = expdlg.data.tag
+    end
+
+    item.times = tonumber(expdlg.data.times)
+
+    expdlg:close()
+    refresh()
+end
+
+
+function expand_up()
+    local item = table.remove(sequence, expi)
+    table.insert(sequence, expi - 1, item)
+    refresh()
+    expand(expi - 1)
+end
+
+
+function expand_down()
+    local item = table.remove(sequence, expi)
+    table.insert(sequence, expi + 1, item)
+    refresh()
+    expand(expi + 1)
+end
+
+
+function expand_remove()
+    local item = table.remove(sequence, expi)
+    expdlg:close()
+    refresh()
+end
+
+
+function expand(i)
+    if expdlg then 
+        xbounds = Rectangle(expdlg.bounds)
+        expdlg:close() 
+    end
+
+    local item = sequence[i]
+
+    expi = i
+
+    expdlg=Dialog()
+    expdlg:separator{text="Edit Sequence Item"}
+
+    if item.name == "frames" then        
+        expdlg:number{ id="from", label="Start Frame", text=tostring(item.from)}
+        expdlg:number{ id="to", label="End Frame", text=tostring(item.to)}
+    else
+        local tags = {}
+    
+        for i,tag in ipairs(sprite.tags) do
+            table.insert(tags, tag.name)
+    
+            if tag.name == last_tag then
+                last_tag_in = true
+            end
+        end
+    
+        -- someone might trip on this but let's hope they will figure it out
+        if not last_tag_in then
+            table.insert(tags, item.name)
+        end
+
+        expdlg:combobox{ id="tag", label="Tag", option=item.name, options=tags}
+    end
+    
+    expdlg:number{ id="times", label="Repeat", text=tostring(item.times)}
+    
+    -- using empty functions here bc the auto-layout makes things jump around, confusing
+    expdlg:button{text="Move Before", onclick=((i > 1) and expand_up or function() end)}
+    expdlg:button{text="Move After", onclick=((i < #sequence) and expand_down or function() end)}
+
+    expdlg:button{ text="Remove", onclick=expand_remove}
+    expdlg:newrow()
+    expdlg:button{ text="OK", onclick=expand_apply}
+    expdlg:button{ text="Close" }
+
+    expdlg:show{ wait=false }
+        
+    if not xbounds then
+        xbounds = Rectangle(expdlg.bounds)
+    end
+    expdlg.bounds = xbounds
 end
 
 
@@ -129,7 +227,7 @@ function show_dialog(bounds)
     end
 
     for i,tdata in ipairs(sequence) do
-        local name = "- " .. tdata.name
+        local name = tdata.name
 
         if tdata.name == "frames" then 
             name = name .. " " .. tdata.from .. ":" .. tdata.to
@@ -141,9 +239,10 @@ function show_dialog(bounds)
 
         if i == 1 then 
             dlg:button{ label="Tag Sequence", text=name, 
-                onclick = function() table.remove(sequence, i) refresh() end }
+                onclick=function() expand(i) end }
         else
-            dlg:button{ text=name, onclick = function() table.remove(sequence, i) refresh() end }
+            dlg:button{ text=name, onclick=function() expand(i) end }
+            --function() table.remove(sequence, i) refresh() end }
         end
         dlg:newrow()
     end
@@ -175,7 +274,6 @@ function show_dialog(bounds)
         bounds.height = dlg.bounds.height
     else
         bounds = Rectangle(dlg.bounds)
-        bounds.width = 256
     end
     dlg.bounds = bounds
 end
