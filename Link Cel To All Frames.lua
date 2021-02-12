@@ -21,6 +21,7 @@ app.transaction( function()
     end
 
     for k,layer in ipairs(layers) do
+        layer.isContinuous = true
         
         -- For some reason, in the script, linking skips empty cels (due to how range works i guess?)
         -- let's create empties where they should go

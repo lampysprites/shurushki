@@ -20,10 +20,17 @@ function init(plugin)
     }
 
     plugin:newCommand{
-        id="Move Cels",
-        title="Move Cels...",
-        group="edit_transform",
-        onclick=run_script("Move Cels.lua")
+        id="Frame Pattern",
+        title="Frame Pattern",
+        group="select_simple",
+        onclick=run_script("Pattern Select Frames.lua")
+    }
+
+    plugin:newCommand{
+        id="Gamma Ramp",
+        title="Gamma Ramp",
+        group="edit_fill",
+        onclick=run_script("Gamma Ramp.lua")
     }
 
     plugin:newCommand{
@@ -48,10 +55,10 @@ function init(plugin)
     }
 
     plugin:newCommand{
-        id="Gamma Ramp",
-        title="Gamma Ramp",
-        group="edit_fill",
-        onclick=run_script("Gamma Ramp.lua")
+        id="Move Cels",
+        title="Move Cels...",
+        group="edit_transform",
+        onclick=run_script("Move Cels.lua")
     }
 
     plugin:newCommand{
@@ -59,13 +66,6 @@ function init(plugin)
         title="Noise",
         group="edit_fill",
         onclick=run_script("Noise.lua")
-    }
-
-    plugin:newCommand{
-        id="Frame Pattern",
-        title="Frame Pattern",
-        group="select_simple",
-        onclick=run_script("Pattern Select Frames.lua")
     }
 
     plugin:newCommand{
