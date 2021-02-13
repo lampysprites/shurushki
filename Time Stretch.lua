@@ -17,7 +17,7 @@ local function go()
 end
 
 dlg
-	:label{label="--- Scale Time ---"}
+	:separator{text="Scale Time"}
 	:entry{id="scale",label="Scale",text="1",focus=true}
 	:entry{id="add",label="Add",text="0"}
 	:check{id="onlyselected",text="Only Selected",selected=true}

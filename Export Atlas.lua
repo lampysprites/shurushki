@@ -144,7 +144,6 @@ function run_packer(bounds, pagecount, texsize)
     local cmd = string.format("python %s %d %d %s", packer_script, pagecount, texsize, bounds_str)
 
     hnd = io.popen(cmd)
-    tmp_file("celsheet.out", cmd)
     packed_str = hnd:read("*a")
     hnd:close()
 
@@ -396,14 +395,58 @@ end
 
 
 --[[ UI DIALOG BOX ]]
-dlg = {} -- Dialog() later
-sprites = {} -- user's selection of which sprites to export
-preview_sprites = {} -- sprites opened for preview
-temp_opened_sprites = {} -- to reopen the sprites included in exporting
-texsize = 0
-outfile = ""
-pages = 1
-padding = 0
+
+-- default settings
+local dlg = {} -- Dialog() later
+local sprites = {} -- user's selection of which sprites to export
+local preview_sprites = {} -- sprites opened for preview
+local temp_opened_sprites = {} -- to reopen the sprites included in exporting
+local texsize = 0
+local outfile = ""
+local pages = 1
+local padding = 0
+local save = true
+
+-- restore settings when dialog reopens
+local session = shki_session_atlas
+if session then 
+    sprites = {}
+    for i,spr in ipairs(session.sprites) do
+        sprites[i] = spr
+    end
+    texsize = session.texsize
+    outfile = session.outfile
+    pages = session.pages
+    padding = session.padding
+    save = session.save
+end
+
+
+function save_session()
+    if dlg.data.persistent then 
+        -- all tables must be copied to avoid accidentally changing something when not asked to
+        -- including nested tables
+        local sprites_copy = {}
+        for i,sprite in ipairs(sprites) do
+            sprites_copy[i] = sprites[i]
+        end
+
+        shki_session_atlas = {
+            sprites = sprites_copy,
+            texsize = dlg.data.texsize,
+            outfile = dlg.data.outfile,
+            pages = 1, -- TODO
+            padding = dlg.data.padding,
+            save = dlg.data.persistent,
+        }
+    else
+        -- as an exception to the rule, remember to not save settings aftwerwards
+        -- i think it's less annoying than "consistent" unchecking it every time
+        shki_session_atlas.save = false
+    end
+end
+
+
 
 function json_export(size, pages)
     local textures = {}
@@ -466,6 +509,8 @@ function preview() -- button callback
         return
     end
 
+    save_session()
+
     for _,spr in ipairs(preview_sprites) do
         spr:close()
     end
@@ -509,6 +554,8 @@ function export() -- button callback
         app.alert("No sprites chosen!") 
         return
     end
+
+    save_session()
 
     if not ensure_sprites_open() then
         return 
@@ -605,8 +652,8 @@ function show_dialog(bounds)
 
     dlg:newrow()
     dlg:separator()
-    -- TODO
-    -- dlg:check{id="savesettings", text="Remember Settings"}
+    
+    dlg:check{id="persistent", label="Remember settings", selected=save}
     dlg:button{text="Preview", onclick=preview}
     dlg:button{text="Export", onclick=export}
     dlg:button{text="Close", onclick=cancel}

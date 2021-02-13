@@ -67,16 +67,56 @@ end
 
 --[[ SCRIPT BUSINESS ]]--
 
--- Road 6 is my original font, no attribution needed ~lampysprites
+-- default settings
 local fontfile = app.fs.joinPath(app.fs.userConfigPath, "extensions", "shurushki", "fonts", "road_6.png")
 local lspace = 0
 local wspace = 8 -- word spacing bc it's not in the font
 local lineh = 1
-local layer = nil
 local lines = {""}
+local save = true
 
 local font = nil
 local layer = nil
+
+-- restore settings when dialog reopens
+local session = shki_session_bitmap_text
+if session then 
+    fontfile = session.fontfile
+    lspace = session.lspace
+    wspace = session.wspace
+    lineh = session.lineh
+    layer = session.layer
+    lines = session.lines
+    save = session.save
+end
+
+
+function save_session()
+    if dlg.data.persistent then 
+        -- all tables must be copied to avoid accidentally changing something when not asked to
+        -- including nested tables
+        local lines = {}
+        for k,v in pairs(dlg.data) do
+            local num = string.match(k, "line(%d+)")
+            if num then
+                lines[tonumber(num)] = v
+            end
+        end
+
+        shki_session_bitmap_text = {
+            fontfile = dlg.data.fontfile,
+            lspace = dlg.data.lspace,
+            wspace = dlg.data.wspace,
+            lineh = dlg.data.lineh,
+            lines = lines,
+            save = dlg.data.persistent
+        }
+    else
+        -- as an exception to the rule, remember to not save settings aftwerwards
+        -- i think it's less annoying than "consistent" unchecking it every time
+        shki_session_bitmap_text.save = false
+    end
+end
 
 
 function add_line() -- button handler
@@ -147,6 +187,7 @@ function refresh()
     lspace = dlg.data.lspace
     wspace = dlg.data.wspace
     lineh = dlg.data.lineh
+    save = dlg.data.persistent
 
     dlg:close()
     show_dialog(rect)
@@ -170,6 +211,7 @@ function show_dialog(bounds)
     if #lines > 1 then 
         dlg:button{text="- Del Line", onclick=remove_line}
     end
+    dlg:button{text="x Clear", onclick=function() lines={""} refresh() end}
 
     dlg:file{ id="fontfile", label="Font file", open=true, title="Choose font file", filename=fontfile }
 
@@ -179,8 +221,9 @@ function show_dialog(bounds)
 
 
     dlg:separator()
-    dlg:button{text="Print", onclick=print_text}
-    dlg:button{text="OK", onclick=function() print_text() dlg:close() end}
+    dlg:check{id="persistent", label="Remember settings", selected=save}
+    dlg:button{text="Print", onclick=function() print_text() save_session() end}
+    dlg:button{text="OK", onclick=function() print_text() save_session() dlg:close() end}
     dlg:button{text="Cancel", onclick=cancel}
 
     
@@ -190,7 +233,6 @@ function show_dialog(bounds)
         bounds.height = dlg.bounds.height
     else
         bounds = Rectangle(dlg.bounds)
-        bounds.width = 256
     end
     dlg.bounds = bounds
 end

@@ -1,7 +1,46 @@
--- stores tags like {name = "str", times = num}
-local sequence = {}
 -- keep it to one sprite
 local sprite = app.activeSprite
+-- to close on exit
+local temp_sprite = nil
+
+-- default settings
+-- stores tags like {name = "str", times = num, *from=num, *to=num}
+local sequence = {}
+local save = true
+
+-- restore settings
+local session = shki_session_splice_ani
+if session then
+    for i,item in ipairs(session.sequence) do
+        sequence[i] = {
+            name=item.name,
+            times=item.times,
+            from=item.from,
+            to=item.to
+        }
+    end
+    save = session.save
+    
+    -- ensure the sprite is open
+    local open = false
+    for _,spr in ipairs(app.sprites) do 
+        if spr.filename == session.sprite then
+            open = true
+            break
+        end
+    end
+
+    if not open then
+        sprite = app.open(session.sprite)
+        if not sprite then 
+            app.alert{text="Sprite can not be opened, or no longer exists, settings will be reset."}
+            sequence = {}
+            local sprite = app.activeSprite
+        end
+        temp_sprite = sprite
+    end
+end
+
 
 local last_tag = app.activeTag or sprite.tags[1]
 -- "tag" or "frames"
@@ -11,11 +50,38 @@ local dlg
 local expdlg, expi, xbounds
 
 
+function save_session()
+    if dlg.data.persistent then
+        shki_session_splice_ani = {
+            sequence = {},
+            sprite = sprite.filename,
+            save = dlg.data.persistent
+        }
+        
+        for i,item in ipairs(sequence) do
+            shki_session_splice_ani.sequence[i] = {
+                name=item.name,
+                times=item.times,
+                from=item.from,
+                to=item.to
+            }
+        end
+    else
+        -- as an exception to the rule, remember to not save settings aftwerwards
+        -- i think it's less annoying than "consistent" unchecking it every time
+        shki_session_atlas.save = false
+    end
+end
+
+
 function cancel()
     if layer then
         app.activeSprite:deleteLayer(layer)
     end
     dlg:close()
+    if temp_sprite then 
+        temp_sprite:close() 
+    end
     app.refresh() -- sometimes it doesn't update :(
 end
 
@@ -99,10 +165,20 @@ function expand_remove()
 end
 
 
+function clear()
+    shki_session_splice_ani = nil
+    dlg:close()
+    if expdlg then 
+        expdlg:close() 
+    end
+end
+
+
 function expand(i)
     if expdlg then 
         xbounds = Rectangle(expdlg.bounds)
         expdlg:close() 
+        expdlg = nil
     end
 
     local item = sequence[i]
@@ -155,6 +231,8 @@ end
 
 
 function go()
+    save_session()
+
     local patty = Sprite(sprite)
     local spliced = Sprite(sprite.spec)
     patty:flatten()
@@ -195,6 +273,9 @@ function go()
     patty:close()
 
     dlg:close()
+    if temp_sprite then 
+        temp_sprite:close()
+    end
 end
 
 
@@ -205,6 +286,8 @@ function show_dialog(bounds)
     -- create options for tag selector
     local tags = {}
     local last_tag_in = false
+
+    
 
     for i,tag in ipairs(sprite.tags) do
         table.insert(tags, tag.name)
@@ -261,6 +344,8 @@ function show_dialog(bounds)
     end
 
     dlg:separator()
+    dlg:check{id="persistent", label="Remember settings", selected=save}
+    dlg:button{text="Clear", onclick=clear}
     dlg:button{text="Refresh", onclick=refresh}
     if #sequence >= 1 then 
         dlg:button{text="OK", onclick=go} 
@@ -285,7 +370,7 @@ elseif #sprite.tags == 0 then
     app.alert("Nothing to do: no tags are defined in this sprite.")
 else
     -- one transaction to undo everything at once
-    app.transaction(function()
+    -- app.transaction(function()
         show_dialog()
-    end)
+    -- end)
 end

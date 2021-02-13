@@ -1,6 +1,44 @@
 
 local dlg = Dialog()
 
+-- default settings
+local take = 1
+local skip = 1
+local shift = 0
+local rel = false
+local srel = false
+local save = true
+
+
+-- restore settings when dialog reopens
+local session = shki_session_select_pattern
+if session then 
+    take = session.take
+    skip = session.skip
+    shift = session.shift
+    rel = session.rel
+    srel = session.srel
+end
+
+
+function save_session()
+    if dlg.data.persistent then
+        shki_session_select_pattern = {
+            take = session.take,
+            skip = session.skip,
+            shift = session.shift,
+            rel = session.rel,
+            srel = session.srel,
+            save = dlg.data.persistent
+        }
+    else
+        -- as an exception to the rule, remember to not save settings aftwerwards
+        -- i think it's less annoying than "consistent" unchecking it every time
+        shki_session_select_pattern.save = false
+    end
+end
+
+
 local function go()
     local newrange = {}
     local take, skip = dlg.data.take, dlg.data.skip
@@ -34,11 +72,13 @@ local function go()
 end
 
 dlg
-    :number{id="take", label="Select", text="1", decimals=0, focus=true}
-    :number{id="skip", label="Skip", text="2", decimals=0, focus=true}
-    :number{id="shift", label="Offset By", text="0", decimals=0, focus=true}
-    :check{id="rel", label="From Selection"}
-    :check{id="srel", label="Shift To Selection"}
+    :number{id="take", label="Select", text=tostring(take), decimals=0, focus=true}
+    :number{id="skip", label="Skip", text=tostring(skip), decimals=0, focus=true}
+    :number{id="shift", label="Offset By", text=tostring(shift), decimals=0, focus=true}
+    :check{id="rel", label="From Selection", selected=rel}
+    :check{id="srel", label="Shift To Selection", selected=srel}
+    :separator()
+    :check{id="persistent", label="Remember settings", selected=save}
     :button{text="Cancel", onclick=function() dlg:close() end}
     :button{text="OK", focus=true, onclick=function() go() dlg:close() end}
     :show{wait=false}

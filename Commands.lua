@@ -1,4 +1,4 @@
-local function run_script(f) 
+function run_script(f) 
     return function()
         dofile(app.fs.joinPath(app.fs.userConfigPath, "extensions", "shurushki", f))
     end
@@ -14,7 +14,7 @@ function init(plugin)
 
     plugin:newCommand{
         id="Export Atlas",
-        title="Export Atlas...",
+        title="Export Atlas",
         group="file_export",
         onclick=run_script("Export Atlas.lua")
     }
