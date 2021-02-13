@@ -62,13 +62,6 @@ function init(plugin)
     }
 
     plugin:newCommand{
-        id="Noise",
-        title="Noise",
-        group="edit_fill",
-        onclick=run_script("Noise.lua")
-    }
-
-    plugin:newCommand{
         id="Splice Animation",
         title="Splice Animation",
         group="file_export",

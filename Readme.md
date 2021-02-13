@@ -41,10 +41,6 @@ Speed up/slow down the animation proportionally by scaling frame durations, or a
 Move cels with a formula based on their frame time or frame number. Makes working with movement animations a little easier. 
 *Example: setting `x=6 * t` will move the sprite with the speed of 6 pixels per frame. After that, calling with `x=-6 * t` does the same but to the left, thus returns the sprite to marching at place.*
 
-## Noise (`Edit > Noise`)
-
-Fill the canvas with noise using Diamond-Square algorithm.
-
 ## Gamma Ramp (`Edit > Gamma Ramp`)
 
 Generates a gamma-interpolated gradient ramp from paint color to bg color. They look more vibrant compared to linear blending. It was created for making fake light textures - the gamma law describes the overlapping lightsources.
