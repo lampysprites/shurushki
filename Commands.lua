@@ -27,10 +27,10 @@ function init(plugin)
     }
 
     plugin:newCommand{
-        id="Gamma Ramp",
-        title="Gamma Ramp",
-        group="edit_fill",
-        onclick=run_script("Gamma Ramp.lua")
+        id="Gamma Gradient",
+        title="Gamma Gradient",
+        group="palette_generation",
+        onclick=run_script("Gamma Gradient.lua")
     }
 
     plugin:newCommand{

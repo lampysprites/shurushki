@@ -41,6 +41,9 @@ Speed up/slow down the animation proportionally by scaling frame durations, or a
 Move cels with a formula based on their frame time or frame number. Makes working with movement animations a little easier. 
 *Example: setting `x=6 * t` will move the sprite with the speed of 6 pixels per frame. After that, calling with `x=-6 * t` does the same but to the left, thus returns the sprite to marching at place.*
 
-## Gamma Ramp (`Edit > Gamma Ramp`)
+## Gamma Gradient (`Palette Options > Gamma Gradient`)
+![example](readme_files/gamma.png)
 
-Generates a gamma-interpolated gradient ramp from paint color to bg color. They look more vibrant compared to linear blending. It was created for making fake light textures - the gamma law describes the overlapping lightsources.
+Generates a gradient ramp from selected colors using the equation for overlapping light.
+
+*Note: at the moment of writing, there's no option to put it into "Sort and Gradients" menu. It works differently from the rest of the UI, and seems to inaccesibble to plugins🤷*
