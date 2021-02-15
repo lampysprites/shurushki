@@ -1,25 +1,4 @@
---[[
-	Colorize timeline cels based on duration, or from selection.
-	
-	How to install:
-		1. In Aseprite, open `File > Scripts > Open Scripts Folder`. In english locale it can be done by pressing `Alt+F, P, O` in succession
-		2. Copy this file into the opened folder.
-		   To save file from github, press "Raw" button above and hit Ctrl+S - don't copy-paste from the web page!
-		3. Restart Aseprite
-		4. (optional) Add keyboard shotcut by opening `Edit > Keyboard Shortcuts` (EN: `Alt+E, K`). Type the script name into the search box.
-		   There's no difference between registering a shortcut for a command or a menu item AFAIK.
-	
-	author: twitter.com/librorumque
-	workflow suggestions: twitter.com/swonqi
-]]
-
---[[
-  The MIT License (MIT)
-  Copyright © 2019 librorumque
-  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-  The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-  THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-]]
+--[[ Colorize timeline cels based on duration, or from selection. ]]
 
 if app.activeSprite == nil then
 	app.alert("Please open a sprite first")
@@ -29,9 +8,16 @@ end
 -- Default settings
 local target = app.range.isEmpty and "duration" or "selection"
 local targetduration = app.activeFrame.duration
-local color = app.fgColor
 local onlyactivelayer = false
 local excludelinked = false
+local color = Color(0xff786aff)
+local colorpresets = {Color(0), color}
+
+for i=1,7 do 
+	local c = Color(colorpresets[2])
+	c.hue = (c.hue + 45 * i) % 360
+	table.insert(colorpresets, c)
+end
 
 
 -- Find all frame durations used in the file
@@ -177,10 +163,10 @@ local function dialog(x,y) -- re-create dialog to show diff widgets in diff mode
 
 	-- messy UI code and nothing else
   dlg
-		:label{label="--- Highlight Cels ---"}
+		:separator{text="Highlight Cels"}
 		:color{id="color", label="Color", color=color}
+		:shades{id="presetcol", mode="pick", colors=colorpresets, onclick=function(e) color=e.color.alpha > 0 and e.color or nil refreshdialog() end}
 		:button{text="From active", onclick=function() color=app.activeCel.color refreshdialog() end}
-		:button{text="Clear", onclick=function() color=nil refreshdialog() end}
 		:radio{label="Target", text="Selected", selected=(target == "selection"),
 			onclick=function() target="selection" refreshdialog() end}
 		:radio{label="", text="By duration", selected=(target == "duration"),
@@ -196,7 +182,7 @@ local function dialog(x,y) -- re-create dialog to show diff widgets in diff mode
   end
 	
 	dlg
-		:check{label="Exclude linked to unmatching", selected=excludelinked,
+		:check{label="Exclude linked to non-matching", selected=excludelinked,
 			onclick=function() excludelinked = not excludelinked end}
 		:button{text="Refresh", onclick=function() refreshdialog() end}
 		:button{text="Close", onclick=function() dlg:close() end}
