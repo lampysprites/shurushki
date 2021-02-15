@@ -24,6 +24,13 @@ Combine multiple sprites to a single texture and generates .json data for the la
 
 Makes Timeline a bit easier to navigate by finding and highlighting frames of certain duration. Also allows to highlight cels manually, even though Aseprite now added its own tools for doing so.
 
+
+## Highlight Layers (`View > Highlight Layers`)
+![example](readme_files/layers.png)
+
+Highlights layers that use blending modes. Only applies to current/selected layers. You'll probably want to change the colors - mind that ase uses 0xAABBGGRR layout for colors, so e.g 0xff0044aa becomes opaque brown
+
+
 ## Link Active Cel / Link To All Frames (`Timeline > Cel > Right Click`)
 
 Make the current cel linked to either the selection, or the whole timeline. Unlike the default commands, all new cels store the same frame as the current cel, not the first one. Makes working with multiple layers for the background in an animation a bit faster.

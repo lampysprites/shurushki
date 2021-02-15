@@ -35,9 +35,16 @@ function init(plugin)
 
     plugin:newCommand{
         id="Highlight Cels",
-        title="Highlight Cels...",
+        title="Highlight Cels",
         group="view_animation_helpers",
         onclick=run_script("Highlight Cels.lua")
+    }
+
+    plugin:newCommand{
+        id="Highlight Layers",
+        title="Highlight Layers",
+        group="view_animation_helpers",
+        onclick=run_script("Highlight Layers.lua")
     }
 
     plugin:newCommand{
