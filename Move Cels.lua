@@ -93,13 +93,11 @@ local function help()
 end
 
 dlg
-	:label{label="--- Formula Move ---"}
+	:separator{text="Move Cels"}
 	:entry{id="fx",label="Move X = ",text="0",focus=true}
 	:entry{id="fy", label="Move Y = ", text="0", focus=true}
 	:button{text="Help", onclick=help}
 	:button{text="Cancel", onclick=function() dlg:close() end}
 	:button{text="OK", focus=true, onclick=function() app.transaction(go) dlg:close() end}
-	-- for debugging, since transaction supresses error messages
-	-- :button{text="OK", focus=true, onclick=function() go() dlg:close() end}
 	:show()
 
