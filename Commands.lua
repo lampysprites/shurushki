@@ -11,6 +11,7 @@ end
 local function all_commands()
     return {
         { name="Bitmap Text", group="edit_fill", location="Edit > Bitmap Text" },
+        { name="Draw Grid", group="edit_fill", location="Edit > Draw Grid" },
         { name="Export Atlas", group="file_export", location="File > Export Atlas" },
         { name="Frame Pattern", group="select_simple", location="Select > Frame Pattern" },
         { name="Gamma Gradient", group="palette_generation", location="Color Bar > Options > Gamma Gradient" },

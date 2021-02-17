@@ -21,6 +21,10 @@ If something goes wrong, it might help to delete `__pref.lua` file in the instal
 
 Draw bitmap text using a simple bmf format used in ProMotion/GrafX2/Love2D/etc. Not to be confused with Angelcode's bmfont. An example of such font (by me) is included. Unlike ttf's, these fonts never blur, support color, and are pretty trivial to edit.
 
+### Draw Grid (`Edit > Draw Grid`)
+
+Generate a grid. Supports isometric, triangular, square and diamond grids.
+
 ### Export Atlas (`File > Export Atlas`)
 
 Combine multiple sprites to a single texture and generates .json data for the layout. Similar to spritesheet export, but can combine multiple sprites, and each layer and frame is treated separately.
