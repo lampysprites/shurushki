@@ -21,6 +21,10 @@ If something goes wrong, it might help to delete `__pref.lua` file in the instal
 
 Draw bitmap text using a simple bmf format used in ProMotion/GrafX2/Love2D/etc. Not to be confused with Angelcode's bmfont. An example of such font (by me) is included. Unlike ttf's, these fonts never blur, support color, and are pretty trivial to edit.
 
+# Circular Shift (`Timeline > Cel > Right Click`)
+
+Moves the selected cels N frames in curcular fashion. For instance, shifting cels for frames {2,3,4,5} by +1 reorders them to {5,2,3,4} in the same place. Optionally, it might apply to timings as well (affects all layers, naturally). I do that quite often to desynchronise the looping parts of the animation, or fix walk-cycle-to-idle snap.
+
 ### Draw Grid (`Edit > Draw Grid`)
 
 Generate a grid. Supports isometric, triangular, square and diamond grids.

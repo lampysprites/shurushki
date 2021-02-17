@@ -21,7 +21,8 @@ local function all_commands()
         { name="Link To All Frames", group="cel_popup_links", location="Timeline > Cel > Right Click"},
         { name="Move Cels", group="edit_transform", location="Edit > Move Cels" },
         { name="Splice Animation", group="file_export", location="File > Splice Animation"},
-        { name="Time Stretch", group="cel_frames", location="Frame > Time Stretch" }
+        { name="Time Stretch", group="cel_frames", location="Frame > Time Stretch" },
+        { name="Circular Shift", group="cel_popup_links", location="Timeline > Cel > Right Click" },
     }
 end
 -- a copy to use as a reference
