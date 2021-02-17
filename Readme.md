@@ -11,9 +11,9 @@ A collection of badly maintained scripts for Aseprite with no unified purpose.
 
 ## **Settings**
 
-To keep the UI uncluttered, unneeded features can be disabled via `Help > Shuruski` (it also opens on first time use).
+To keep the UI uncluttered, unneeded features can be disabled via `Help > Shuruski` (it also opens on first launch after the installation).
 
-If something goes wrong, it might help to delete `__pref.lua` file in the installation folder. It can be found by going to "Edit > Preferences > Extensions", picking **this** extension and clicking "Open Folder" nearby.
+If something goes wrong, it might help to delete `__pref.lua` file in the installation folder. It can be found by going to "Edit > Preferences > Extensions", picking **this** extension and clicking "Open Folder" nearby. If that doesn't work, look inside [settings folder](https://www.aseprite.org/docs/preferences-folder/) (on windows, type `%APPDATA%\aseprite\extensions\shurushki` in the explorer's address bar).
 
 ## **Scripts**
 
