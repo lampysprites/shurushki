@@ -10,10 +10,10 @@ local target = app.range.isEmpty and "duration" or "selection"
 local targetduration = app.activeFrame.duration
 local onlyactivelayer = false
 local excludelinked = false
-local color = Color(0xff786aff)
-local colorpresets = {Color(0), color}
+local colorpresets = {Color(0), Color(0xff786aff)} -- will fill later
+local color = app.activeCel.color or colors[1]
 
-for i=1,7 do 
+for i=1,7 do
 	local c = Color(colorpresets[2])
 	c.hue = (c.hue + 45 * i) % 360
 	table.insert(colorpresets, c)
