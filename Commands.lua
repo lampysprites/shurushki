@@ -22,6 +22,7 @@ local function all_commands()
         { name="Move Cels", group="edit_transform", location="Edit > Move Cels" },
         { name="Splice Animation", group="file_export", location="File > Splice Animation"},
         { name="Time Stretch", group="cel_frames", location="Frame > Time Stretch" },
+        { name="To Layers", group="cel_popup_links", location="Timeline > Cel > Right Click" },
         { name="Circular Shift", group="cel_popup_links", location="Timeline > Cel > Right Click" },
     }
 end

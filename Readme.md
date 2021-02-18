@@ -66,6 +66,10 @@ Speed up/slow down the animation proportionally by scaling frame durations, or a
 Move cels with a formula based on their frame time or frame number. Makes working with movement animations a little easier. 
 *Example: setting `x=6 * t` will move the sprite with the speed of 6 pixels per frame. After that, calling with `x=-6 * t` does the same but to the left, thus returns the sprite to marching at place.*
 
+### Cels To Layers (`Timeline > Cel > Right Click`)
+
+Move each selected cel into a new separate layer. It helps, for instance, to merge several frames into one; or to open png sequence as layers. Overall, it's a weird feature that mostly satisfies author's personal preferences.
+
 ### Gamma Gradient (`Color Bar > Options > Gamma Gradient`)
 ![example](readme_files/gamma.png)
 
