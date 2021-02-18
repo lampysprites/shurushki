@@ -14,10 +14,30 @@ size_options = {{"auto","0"}, {"256","256"}, {"512","512"}, {"1k","1024"},
 
 --[[ UTIL ]]
 
+-- Compare images pixel by pixel
+function same_image(img1, img2)
+    if img1.width ~= img2.width or img1.height ~= img2.height then
+        return false
+    end
+
+    for x=0,img1.width-1 do
+        for y=0,img1.height-1 do
+            local px1, px2 = img1:getPixel(x, y), img2:getPixel(x, y)
+            -- intvalues might have different rgb, but 0 alpha, gotta check for it too
+            if px1 ~= px2 and not (px1 & 0xff000000 == 0 and px2 & 0xff000000 == 0) then
+                return false
+            end
+        end
+    end
+
+    return true
+end
+
+-- address a table by an image key
 -- for ase objects (e.g Image) need to compare keys as obj1 == obj2 with an "=="; table[obj] might miss the existing key
 function find_by_key(map, key)
     for k, v in pairs(map) do
-        if k == key then
+        if k == key or same_image(k, key) then
             return v
         end
     end 
@@ -114,17 +134,19 @@ end
         executed from the dialog ui. It can be reused in a custom script, if you're looking for a CLI option]]
 -- add the sprite's cels to packing data
 
-function prepare_packing(bounds, bounds_map, sprite, pad)
+function prepare_packing(bounds, bounds_map, sprite, pad, only_visible)
     local i = #bounds + 1
     for _,cel in ipairs(sprite.cels) do
-        local image = cel.image
-        -- skip linked cels - they have the same image as one of the previous cels
-        -- so the map has an entry for them
+        if cel.layer.isVisible or not only_visible then
+            local image = cel.image
+            -- skip linked cels - they have the same image as one of the previous cels
+            -- so the map has an entry for them
 
-        if find_by_key(bounds_map, image) == nil then
-            bounds[i] = {w=cel.bounds.width + 2 * pad, h=cel.bounds.height + 2 * pad, cel=cel}
-            bounds_map[image] = i
-            i = i + 1
+            if find_by_key(bounds_map, image) == nil then
+                bounds[i] = {w=cel.bounds.width + 2 * pad, h=cel.bounds.height + 2 * pad, cel=cel}
+                bounds_map[image] = i
+                i = i + 1
+            end
         end
     end
 end
@@ -201,13 +223,13 @@ end
 
 
 -- generate packed Image(s). returns an array
-function pack_textures(sprites, texsize, pages, pad)
+function pack_textures(sprites, texsize, pages, pad, only_visible)
     local bounds = {}
     local image_to_bounds_map = {}
     local result
 
     for _,sprite in ipairs(sprites) do
-        prepare_packing(bounds, image_to_bounds_map, sprite, pad)
+        prepare_packing(bounds, image_to_bounds_map, sprite, pad, only_visible)
     end
     if texsize == 0 then
         result = packer_auto_size(bounds)
@@ -264,15 +286,17 @@ end
 
 -- number layers linearly to use it as a global id later
 -- second arg is function's internal use
-function flatten_layers(layers, acc)
+function flatten_layers(layers, acc, only_visible)
     if acc == nil then 
         acc = {} 
     end
 
     for _,layer in ipairs(layers) do
-        table.insert(acc, layer)
-        if layer.layers then
-            flatten_layers(layer.layers, acc)
+        if layer.isVisible or not only_visible then 
+            table.insert(acc, layer)
+            if layer.layers then
+                flatten_layers(layer.layers, acc, only_visible)
+            end
         end
     end
 
@@ -291,13 +315,17 @@ function layer_glob_index(layers_flattened, layer)
 end
 
 
-function json_layers(sprite)
-    local layers_flattened = flatten_layers(sprite.layers)
+function json_layers(sprite, only_visible)
+    local layers_flattened = flatten_layers(sprite.layers, nil, only_visible)
     local entries = {}
 
     local add_layer_entry 
     add_layer_entry = function (layer, group)
         local id = layer_glob_index(layers_flattened, layer)
+
+        if id == 0 then 
+            return 
+        end
     
         local entry = table.concat({
             '{"id": ', id, ',',
@@ -341,28 +369,31 @@ function json_cels(sprite, bounds, image_to_bounds_map, layers_flattened, pad)
     local entries = {}
 
     for i,cel in ipairs(sprite.cels) do
+        local lid = layer_glob_index(layers_flattened, cel.layer)
         local bb = bounds[find_by_key(image_to_bounds_map, cel.image)]
-        local page = 1 -- TODO bb.page
-        
-        local entry = table.concat({
-                '{"layer": ', layer_glob_index(layers_flattened, cel.layer) - 1, ',', -- switch to cultcargo arrays
-                '"frame": ', cel.frameNumber, ',',
-                '"duration" :', math.floor(cel.frame.duration * 1000) ,',',
-                '"page": ', page - 1, ',', -- switch to cultcargo arrays
-                '"x": ', cel.position.x, ',',
-                '"y": ', cel.position.y, ',',
-                '"u": ', bb.x + pad, ',',
-                '"v": ', bb.y + pad, ',',
-                '"w": ', bb.w - 2 * pad, ',',
-                '"h": ', bb.h - 2 * pad
-            }, "")
+        if lid > 0 then
+            local page = 1 -- TODO bb.page
+            
+            local entry = table.concat({
+                    '{"layer": ', lid - 1, ',', -- switch to cultcargo arrays
+                    '"frame": ', cel.frameNumber, ',',
+                    '"duration" :', math.floor(cel.frame.duration * 1000) ,',',
+                    '"page": ', page - 1, ',', -- switch to cultcargo arrays
+                    '"x": ', cel.position.x, ',',
+                    '"y": ', cel.position.y, ',',
+                    '"u": ', bb.x + pad, ',',
+                    '"v": ', bb.y + pad, ',',
+                    '"w": ', bb.w - 2 * pad, ',',
+                    '"h": ', bb.h - 2 * pad
+                }, "")
 
-        if cel.data ~= "" then 
-            entry = entry .. table.concat({',', '"data": "', cel.data, '"'}, "")
+            if cel.data ~= "" then 
+                entry = entry .. table.concat({',', '"data": "', cel.data, '"'}, "")
+            end
+
+            entry = entry .. '}'
+            table.insert(entries, entry)
         end
-
-        entry = entry .. '}'
-        entries[i] = entry
     end
 
     return "[" .. table.concat(entries, ",") .. "]"
@@ -405,6 +436,8 @@ local texsize = 0
 local outfile = ""
 local pages = 1
 local padding = 0
+-- TODO
+local only_visible = false
 local save = true
 
 -- restore settings when dialog reopens
@@ -418,6 +451,7 @@ if session then
     outfile = session.outfile
     pages = session.pages
     padding = session.padding
+    only_visible = session.only_visible
     save = session.save
 end
 
@@ -437,6 +471,7 @@ function save_session()
             outfile = dlg.data.outfile,
             pages = 1, -- TODO
             padding = dlg.data.padding,
+            only_visible = dlg.data.only_visible,
             save = dlg.data.persistent,
         }
     else
@@ -520,7 +555,7 @@ function preview() -- button callback
         return 
     end
 
-    local pages = pack_textures(sprites, dlg.data.texsize, 1--[[dlg.data.pages]], dlg.data.padding)
+    local pages = pack_textures(sprites, dlg.data.texsize, 1--[[dlg.data.pages]], dlg.data.padding, dlg.data.only_visible)
     if pages ~= nil then 
         for i,tex in ipairs(pages) do
             local texspr = Sprite(tex.width, tex.height)
@@ -570,7 +605,7 @@ function export() -- button callback
         return
     end
     
-    local pages, texsize, bounds, image_to_bounds_map = pack_textures(sprites, dlg.data.texsize, 1--[[dlg.data.pages]], dlg.data.padding)
+    local pages, texsize, bounds, image_to_bounds_map = pack_textures(sprites, dlg.data.texsize, 1--[[dlg.data.pages]], dlg.data.padding, dlg.data.only_visible)
     if pages ~= nil then 
         for i,tex in ipairs(pages) do
             local texname = string.format("%s_%03d.png", cname, i)
@@ -583,7 +618,7 @@ function export() -- button callback
 
     local json_sprites = {}
     for _,sprite in ipairs(sprites) do
-        local layer_entries, layers_flattened = json_layers(sprite)
+        local layer_entries, layers_flattened = json_layers(sprite, dlg.data.only_visible)
         local tag_entries = json_tags(sprite)
         local cel_entries = json_cels(sprite, bounds, image_to_bounds_map, layers_flattened, dlg.data.padding)
         local short_name = app.fs.fileTitle(sprite.filename)
@@ -633,6 +668,7 @@ function show_dialog(bounds)
     for i,sprite in ipairs(sprites) do
         dlg:button { label="", text = "- " .. sprite.filename, onclick=remove_sprite_f() }
     end
+    dlg:check{id="only_visible", label="Only Visible Layers", selected=only_visible}
     -- TODO
     -- dlg:number{ id="pages", label="Pages", text=tostring(pages)}
     dlg:number{ id="texsize", label="Page Size", text=tostring(texsize)}
