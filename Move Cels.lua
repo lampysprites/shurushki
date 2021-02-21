@@ -62,10 +62,10 @@ local function go()
 		local dx, dy
 		
 		t = cel.frameNumber - minframe
-		sec = seconds(t)
+		-- sec = seconds(t)
 		cnt = #app.range.frames
 		len = maxframe - minframe + 1
-		tlen = seconds(maxframe) - app.activeSprite.frames[maxframe].duration
+		-- tlen = seconds(maxframe) - app.activeSprite.frames[maxframe].duration
 		dx, dy = fx(), fy()
 		
 		cel.position = Point(cel.position.x + dx, cel.position.y + dy)
@@ -84,10 +84,10 @@ local function help()
 		:label{label="quadt(height)", text="ballistic curve, accounting for frame durations"}
 		:separator{text="Variables"}
 		:label{label="t", text="frame# relative to the first selected cel, starting at 0"}
-		:label{label="sec", text="time passed since the first selected cel in seconds"}
+		-- :label{label="sec", text="time passed since the first selected cel in seconds"}
 		:label{label="cnt", text="# of selected frames"}
 		:label{label="len", text="# of frames from the first to the last of selected frames"}
-		:label{label="tlen", text="time between beginnings of the first and the last selected frames"}
+		-- :label{label="tlen", text="time between beginnings of the first and the last selected frames"}
 		:button{text="Close", focus=true, onclick=function() dlg:close() end}
 		:show{wait=false}
 end
