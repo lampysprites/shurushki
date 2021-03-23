@@ -42,12 +42,14 @@ Export an animation by joining tags or frames several times.
 
 Makes Timeline a bit easier to navigate by finding and highlighting frames of certain duration. Also allows to highlight cels manually, even though Aseprite now added its own tools for doing so.
 
-
 ### Highlight Layers (`View > Highlight Layers`)
 ![example](readme_files/layers.png)
 
 Highlights layers that use blending modes. Only applies to current/selected layers. You'll probably want to change the colors - mind that ase uses 0xAABBGGRR layout for colors, so e.g 0xff0044aa becomes opaque brown
 
+### Ramp From Selection (`Color Bar > Options > Ramp From Selection`)
+
+Adds all colors used inside of the selection to the palette, sorted by value. Same could be done with the colorpicker and "Add color to the palette" command (which needs to be assigned to a key to use) but faster and less chance to miss a color.
 
 ### Link Active Cel / Link To All Frames (`Timeline > Cel > Right Click`)
 
