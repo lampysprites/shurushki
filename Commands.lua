@@ -20,6 +20,7 @@ local function all_commands()
         { name="Link Active", group="cel_popup_links", location="Timeline > Cel > Right Click" },
         { name="Link To All Frames", group="cel_popup_links", location="Timeline > Cel > Right Click"},
         { name="Move Cels", group="edit_transform", location="Edit > Move Cels" },
+        { name="Ramp From Selection", group="palette_generation", location="Color Bar > Options > Ramp From Selection" },
         { name="Splice Animation", group="file_export", location="File > Splice Animation"},
         { name="Time Stretch", group="cel_frames", location="Frame > Time Stretch" },
         { name="To Layers", group="cel_popup_links", location="Timeline > Cel > Right Click" },
