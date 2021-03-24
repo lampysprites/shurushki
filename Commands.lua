@@ -39,7 +39,7 @@ local function settings_dialog(prefs, firsttime)
     if firsttime then
         dlg:label({text="FIRST TIME SETUP"})
         dlg:newrow()
-        dlg:label({text="Thank you for using the plugin! Hope it comes in useful."})
+        dlg:label({text="Thank you for using the plugin! Hope it comes useful."})
         dlg:separator()
     end
     dlg:label{ text="Choose features you want to use" }
@@ -97,6 +97,17 @@ function init(plugin)
         settings_dialog(plugin.preferences, true)
     end
 
+    -- add extra shortcuts (no menus)
+    run_script("Shortcuts")()
+    for _,props in ipairs(shki_shortcuts) do
+        plugin:newCommand{
+            id=props.name,
+            title=props.name,
+            onclick=props.fn
+        }
+    end
+
+    -- register new menus
     for _,props in ipairs(plugin.preferences.commands) do
         plugin:newCommand{
             id=props.name,

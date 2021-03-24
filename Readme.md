@@ -2,20 +2,20 @@
 
 A collection of badly maintained scripts for Aseprite with no unified purpose.
 
-## **Installation**
+## Installation
 1. Download this repo as a .zip using the "Code" button above. 
 1. Change the extension from .zip to .aseprite-extension.
 1. Double click it to install. 
 1. Alternatively, in Aseprite, got to "Edit > Preferences > Extensions > Add Extension" and select the saved file.
 1. Might need to restart Aseprite for menu options to appear.
 
-## **Settings**
+## Settings
 
 To keep the UI uncluttered, unneeded features can be disabled via `Help > Shuruski` (it also opens on first launch after the installation).
 
 If something goes wrong, it might help to delete `__pref.lua` file in the installation folder. It can be found by going to "Edit > Preferences > Extensions", picking **this** extension and clicking "Open Folder" nearby. If that doesn't work, look inside [settings folder](https://www.aseprite.org/docs/preferences-folder/) (on windows, type `%APPDATA%\aseprite\extensions\shurushki` in the explorer's address bar).
 
-## **Scripts**
+## Scripts
 
 ### Bitmap Text (`Edit > Bitmap Text`)
 
@@ -78,3 +78,19 @@ Move each selected cel into a new separate layer. It helps, for instance, to mer
 Generates a gradient ramp from selected colors using the equation for overlapping light.
 
 *Note: at the moment of writing, there's no option to put it into "Sort and Gradients" menu. It works differently from the rest of the UI, and seems to inaccesibble to plugins🤷*
+
+## Shortcuts
+
+Shortcuts have to be assigned in the shortcuts menu (`Edit > Keyboard Shortcuts` or `Shift + Ctrl + Alt + K`).
+
+### Common %shape% Brush; Common %change% Size; Common %change% Opacity
+
+Change the brush parameters. Some of this functionality is already available as ase commands, but unlike those, these shortcuts apply to every tool at once. It's an opinionated change, but the author personally *never, not even once,* remebered which settings the tool has, resulting in unnerving surprizes. To make things worse, ase does share the color among the tools, while the brush shape and size are independent.
+
+## Certain Fill; Certain Replace Color
+
+Switches to the Fill tool with contiguous switch on or off. Also opinionated, but from artistic point of view, these two techniques produce vastly different results. It's more convenient to make them separate, forgetting the word "contiguous". Look how they got different names for what they do, not how they work.
+
+## Certain Select Color; Certain Select Cluster
+
+Switches to the Magic Wand tool with contiguous switch on or off. Same exact reasoning applies as for fill/replace color.
