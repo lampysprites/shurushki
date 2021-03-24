@@ -5,7 +5,7 @@ shki_shortcuts = {
     { name="Common Square Brush", fn = function() for _, tool in pairs(tools) do local stroke = app.preferences.tool(tool).brush stroke.type = BrushType.SQUARE stroke.size = stroke.size + 1 stroke.size = stroke.size - 1 end end },
 
     { name="Common Decrease Opacity", fn = function() local fgColor = app.fgColor local alpha = fgColor.alpha - 32 fgColor.alpha = (alpha < 0) and 0 or alpha app.fgColor = fgColor end },
-    { name="Common Increase Opacity", fn = function() local fgColor = app.fgColor local alpha = fgColor.alpha - 32 fgColor.alpha = (alpha > 255) and 255 or alpha app.fgColor = fgColor end },
+    { name="Common Increase Opacity", fn = function() local fgColor = app.fgColor local alpha = fgColor.alpha + 32 fgColor.alpha = (alpha > 255) and 255 or alpha app.fgColor = fgColor end },
     { name="Common Zero Opacity", fn = function() local fgColor = app.fgColor fgColor.alpha = 0 app.fgColor = fgColor end },
     { name="Common Full Opacity", fn = function() local fgColor = app.fgColor fgColor.alpha = 255 app.fgColor = fgColor end },
 
