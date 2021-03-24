@@ -45,7 +45,7 @@ Makes Timeline a bit easier to navigate by finding and highlighting frames of ce
 ### Highlight Layers (`View > Highlight Layers`)
 ![example](readme_files/layers.png)
 
-Highlights layers that use blending modes. Only applies to current/selected layers. You'll probably want to change the colors - mind that ase uses 0xAABBGGRR layout for colors, so e.g 0xff0044aa becomes opaque brown
+Highlights layers that use blending modes. Only applies to current/selected layers. You'll probably want to edit the code to change the colors - mind that ase uses 0xAABBGGRR layout for colors, so e.g 0xff0044aa becomes opaque brown
 
 ### Ramp From Selection (`Color Bar > Options > Ramp From Selection`)
 
@@ -87,10 +87,10 @@ Shortcuts have to be assigned in the shortcuts menu (`Edit > Keyboard Shortcuts`
 
 Change the brush parameters. Some of this functionality is already available as ase commands, but unlike those, these shortcuts apply to every tool at once. It's an opinionated change, but the author personally *never, not even once,* remebered which settings the tool has, resulting in unnerving surprizes. To make things worse, ase does share the color among the tools, while the brush shape and size are independent.
 
-## Certain Fill; Certain Replace Color
+### Certain Fill; Certain Replace Color
 
 Switches to the Fill tool with contiguous switch on or off. Also opinionated, but from artistic point of view, these two techniques produce vastly different results. It's more convenient to make them separate, forgetting the word "contiguous". Look how they got different names for what they do, not how they work.
 
-## Certain Select Color; Certain Select Cluster
+### Certain Select Color; Certain Select Cluster
 
 Switches to the Magic Wand tool with contiguous switch on or off. Same exact reasoning applies as for fill/replace color.
