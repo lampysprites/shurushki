@@ -94,3 +94,7 @@ Switches to the Fill tool with contiguous switch on or off. Also opinionated, bu
 ### Certain Select Color; Certain Select Cluster
 
 Switches to the Magic Wand tool with contiguous switch on or off. Same exact reasoning applies as for fill/replace color.
+
+### Background Zero
+
+Set background color to transparent black

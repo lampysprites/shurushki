@@ -8,6 +8,7 @@ shki_shortcuts = {
     { name="Common Increase Opacity", fn = function() local fgColor = app.fgColor local alpha = fgColor.alpha + 32 fgColor.alpha = (alpha > 255) and 255 or alpha app.fgColor = fgColor end },
     { name="Common Zero Opacity", fn = function() local fgColor = app.fgColor fgColor.alpha = 0 app.fgColor = fgColor end },
     { name="Common Full Opacity", fn = function() local fgColor = app.fgColor fgColor.alpha = 255 app.fgColor = fgColor end },
+    { name="Background Zero Opacity", fn = function() app.bgColor = Color{r=0, g=0, b=0, a=0} end },
 
     { name="Common Decrement Size", fn = function() local active = app.preferences.tool(app.activeTool).brush active.size = (active.size > 1) and (active.size - 1) or 1 for _, tool in pairs(tools) do local stroke = app.preferences.tool(tool).brush stroke.size = active.size end end },
     { name="Common Increment Size", fn = function() local active = app.preferences.tool(app.activeTool).brush active.size = active.size + 1 for _, tool in pairs(tools) do local stroke = app.preferences.tool(tool).brush stroke.size = active.size end end },
