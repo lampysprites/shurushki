@@ -25,6 +25,7 @@ local function all_commands()
         { name="Time Stretch", group="cel_frames", location="Frame > Time Stretch" },
         { name="To Layers", group="cel_popup_links", location="Timeline > Cel > Right Click" },
         { name="Circular Shift", group="cel_popup_links", location="Timeline > Cel > Right Click" },
+        { name="Open In GrafX2", group="layer_merge", location="Layer > Open In GrafX2"}
     }
 end
 -- a copy to use as a reference

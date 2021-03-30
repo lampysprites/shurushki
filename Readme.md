@@ -55,6 +55,10 @@ Adds all colors used inside of the selection to the palette, sorted by value. Sa
 
 Make the current cel linked to either the selection, or the whole timeline. Unlike the default commands, all new cels store the same frame as the current cel, not the first one. Makes working with multiple layers for the background in an animation a bit faster.
 
+### Open In GrafX2 (`Layer > Open in GrafX2`)
+
+Opens the current layer (clipped to the sprite border) in grafx2 and patches it back when it's closed. Everything beyond the sprite border will be lost. Only works on Windows, and you need to change the path to the grafx2 executable in the beginning of the script file for it to work properly.
+
 ### Pattern Select (`Select > Frame Pattern`)
 
 Select frames in a checkered order. Primary use is for dropping the frames from gifs to reduce the size (in that case, don't forget to adjust the framerate afterwards!).
