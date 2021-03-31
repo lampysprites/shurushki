@@ -11,6 +11,7 @@ end
 local function all_commands()
     return {
         { name="Bitmap Text", group="edit_fill", location="Edit > Bitmap Text" },
+        { name="Center", group="edit_transform", location="Edit > Center" },
         { name="Draw Grid", group="edit_fill", location="Edit > Draw Grid" },
         { name="Export Atlas", group="file_export", location="File > Export Atlas" },
         { name="Frame Pattern", group="select_simple", location="Select > Frame Pattern" },
