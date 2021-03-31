@@ -3,7 +3,7 @@ local dlg = Dialog()
     :check{ id="horizontal", label="horizontal", selected=true }
     :check{ id="vertical", label="vertical", selected=true }
     :button{ id="cancel", text="Cancel" }
-    :button{ id="ok", text="OK" }
+    :button{ id="ok", text="OK", focus=true }
     :show()
 
 if dlg.data.ok then
