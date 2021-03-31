@@ -102,3 +102,7 @@ Switches to the Magic Wand tool with contiguous switch on or off. Same exact rea
 ### Background Zero
 
 Set background color to transparent black
+
+### No Overlay Brightness/Contrast|Hue/Saturation|Color Curve
+
+Same usual color adjustments, but it hides the selection/onionskins/grid during the adjustment. This doesn't replace edit menu items!! But can be assigned to the shortcuts the default transforms had.
