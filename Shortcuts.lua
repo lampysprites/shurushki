@@ -52,5 +52,7 @@ shki_shortcuts = {
 
     { name="No Overlay Brightness/Contrast", fn=color_adjust(app.command.BrightnessContrast) },
     { name="No Overlay Hue/Saturation", fn=color_adjust(app.command.HueSaturation) },
-    { name="No Overlay Color Curve", fn=color_adjust(app.command.ColorCurve) }
+    { name="No Overlay Color Curve", fn=color_adjust(app.command.ColorCurve) },
+
+    {name="Invert Visiblity", fn=function() for _,l in ipairs(app.range.layers) do l.isVisible = not l.isVisible end app.refresh() end}
 }

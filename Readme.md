@@ -110,3 +110,7 @@ Set background color to transparent black
 ### No Overlay Brightness/Contrast|Hue/Saturation|Color Curve
 
 Same usual color adjustments, but it hides the selection/onionskins/grid during the adjustment. This doesn't replace edit menu items!! But can be assigned to the shortcuts the default transforms had.
+
+### Invert Visibility
+
+Flip each layer's visibility to the opposite, allowing switching back and forth between two versions/edits/etc, even when animation is present.
