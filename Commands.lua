@@ -18,6 +18,7 @@ local function all_commands()
         { name="Gamma Gradient", group="palette_generation", location="Color Bar > Options > Gamma Gradient" },
         { name="Highlight Cels", group="view_animation_helpers", location="View > Highlight Layers" },
         { name="Highlight Layers", group="view_animation_helpers", location="View > Highlight Layers" },
+        { name="Is It Empty", group="layer_popup_merge", location="Timeline > Layer > Right Click" },
         { name="Link Active", group="cel_popup_links", location="Timeline > Cel > Right Click" },
         { name="Link To All Frames", group="cel_popup_links", location="Timeline > Cel > Right Click"},
         { name="Move Cels", group="edit_transform", location="Edit > Move Cels" },

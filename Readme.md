@@ -76,6 +76,12 @@ Move cels with a formula based on their frame time or frame number. Makes workin
 
 Move the selected cels to the center of the canvas, or selection when there's one.
 
+
+### Is It Empty?
+
+Check that the layer is empty, which replaces scrolling through the whole timeline in an attempt to decide whether "Layer 4" is safe to delete.
+
+
 ### Cels To Layers (`Timeline > Cel > Right Click`)
 
 Move each selected cel into a new separate layer. It helps, for instance, to merge several frames into one; or to open png sequence as layers. Overall, it's a weird feature that mostly satisfies author's personal preferences.
