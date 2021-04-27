@@ -63,6 +63,10 @@ Opens the current layer (clipped to the sprite border) in grafx2 and patches it 
 
 Select frames in a checkered order. Primary use is for dropping the frames from gifs to reduce the size (in that case, don't forget to adjust the framerate afterwards!).
 
+### Resample (`Frame > Resample`)
+
+Split each frame into several of given duration, to prepare anims for engines (or social networks) that can't properly handle animations with varying timing.
+
 ### Time Stretch (`Frame > Time Stretch`)
 
 Speed up/slow down the animation proportionally by scaling frame durations, or adding/removing a constant amount of time to them.
