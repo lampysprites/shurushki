@@ -58,7 +58,9 @@ local function bmf_print(font, dest, text, x, y, lspace, wspace)
         else
             local chr = bmf_find_char(font, ch)
             for px in font:pixels(chr) do
-                dest:drawPixel(x + px.x - chr.x, y + px.y - chr.y, px())
+                if px() & 0xff000000 > 0 then
+                    dest:drawPixel(x + px.x - chr.x, y + px.y - chr.y, px())
+                end
             end
             x = x + chr.width + lspace
         end
