@@ -1,4 +1,6 @@
-local tools = { "pencil", "spray", "eraser", "line", "curve", "rectangle", "ellipse" }
+local tools = { "rectangular_marquee", "elliptical_marquee", "lasso", "polygonal_lasso", "magic_wand", "pencil", 
+        "spray", "eraser", "eyedropper", "hand", "move", "slice", "zoom", "paint_bucket", "gradient", "line", 
+        "curve", "rectangle", "filled_rectangle", "ellipse", "filled_ellipse", "contour", "polygon", "blur", "jumble" }
 
 -- Base function for color adjustments that hides all overlays and restores them
 local color_adjust = function(adjust) 
